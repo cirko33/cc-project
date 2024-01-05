@@ -31,6 +31,7 @@ jobs:
         docker push cirko33/others:latest
 
     - name: Build and Push Docker Image for Central
+      run: |
         docker build -t cirko33/central:latest ./central
         if [ $? -eq 0 ]; then
           echo "Docker build successful"
