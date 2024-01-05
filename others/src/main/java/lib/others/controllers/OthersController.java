@@ -10,21 +10,28 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lib.others.dtos.BookRentDTO;
 import lib.others.dtos.RegisterDTO;
+import lib.others.dtos.ReturnBookDTO;
 import lib.others.services.OthersService;
 
 @RestController
-public class RegisterController {
+public class OthersController {
     @Autowired OthersService othersService;
     
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterDTO registerDTO) throws Exception {
-        String ret = othersService.register(registerDTO);
-        return ResponseEntity.ok(ret);
+        othersService.register(registerDTO);
+        return ResponseEntity.ok("Successfull registration");
     }
 
     @PostMapping("/rent")
     public ResponseEntity<String> rent(@Valid @RequestBody BookRentDTO bookRentDTO) throws Exception {
-        String ret = othersService.rent(bookRentDTO);
-        return ResponseEntity.ok(ret);
+        othersService.rent(bookRentDTO);
+        return ResponseEntity.ok("Successfull rent");
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<String> returnBook(@Valid @RequestBody ReturnBookDTO returnBookDTO) throws Exception  {
+        othersService.returnBook(returnBookDTO);
+        return ResponseEntity.ok("Successfull return");
     }
 }

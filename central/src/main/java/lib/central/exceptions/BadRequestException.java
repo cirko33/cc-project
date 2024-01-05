@@ -1,0 +1,7 @@
+package lib.central.exceptions;
+
+public class BadRequestException extends ResultException {
+    public BadRequestException(String message) {
+        super(message);
+    }
+}

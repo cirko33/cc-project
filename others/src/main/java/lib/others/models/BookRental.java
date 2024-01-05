@@ -1,6 +1,6 @@
 package lib.others.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,12 +14,12 @@ import lombok.Data;
 public class BookRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String title;
     private String author;
-    private int userId;
+    private Long userId;
     private String isbn;
-    private Date rentalDate;
-    private Date returnDate = null;
-    private Boolean returned;
+    private LocalDate rentalDate;
+    private LocalDate returnDate = null;
+    private Boolean returned = false;
 }

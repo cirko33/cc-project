@@ -1,26 +1,24 @@
 package lib.others.services;
 
-import java.io.IOException;
-import java.net.HttpRetryException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
-import org.apache.tomcat.util.json.JSONParser;
+import java.time.LocalDate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriBuilder;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lib.others.dtos.BookRentDTO;
 import lib.others.dtos.RegisterDTO;
+import lib.others.dtos.ReturnBookDTO;
+import lib.others.dtos.UserIdDTO;
+import lib.others.exceptions.ResultException;
+import lib.others.models.BookRental;
+import lib.others.repositories.BookRentalRepository;
 
 @Service
 public class OthersService {
@@ -31,26 +29,35 @@ public class OthersService {
     HttpClient httpClient;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    ModelMapper modelMapper;
+    @Autowired
+    BookRentalRepository repo;
 
-    public String register(RegisterDTO registerDTO) throws Exception {
-        String response = sendRequest("register", objectMapper.writeValueAsString(registerDTO));
-        if(response.equals("true")) {
-            return "Register success";
-        }
-
-        return "Register failed";
+    public void register(RegisterDTO registerDTO) throws Exception {
+        sendRequest("register", objectMapper.writeValueAsString(registerDTO));
     } 
 
-    public String rent(BookRentDTO bookRentDTO) throws Exception {
-        String response = sendRequest("rent", objectMapper.writeValueAsString(bookRentDTO));
-        if(response.equals("true")) {
-            return "Rent success";
-        }
-
-        return "Rent failed";
+    public void rent(BookRentDTO bookRentDTO) throws Exception {
+        UserIdDTO userIdDTO = modelMapper.map(bookRentDTO, UserIdDTO.class);
+        sendRequest("rent", objectMapper.writeValueAsString(userIdDTO));
+    
+        BookRental rent = modelMapper.map(bookRentDTO, BookRental.class);
+        repo.save(rent);        
     }
 
-    private String sendRequest(String route, String body) throws IOException, Exception {
+    public void returnBook(ReturnBookDTO returnBookDTO) throws Exception {
+        BookRental rent = repo.findByIsbn(returnBookDTO.getIsbn());
+        if(rent == null) throw new ResultException("Book not found");
+
+        UserIdDTO userIdDTO = modelMapper.map(returnBookDTO, UserIdDTO.class);
+        sendRequest("return", objectMapper.writeValueAsString(userIdDTO));
+
+        rent.setReturnDate(LocalDate.now());
+        repo.save(rent);
+    }
+
+    private void sendRequest(String route, String body) throws Exception {
         try
         {
             HttpRequest request = HttpRequest.newBuilder()
@@ -60,7 +67,9 @@ public class OthersService {
             .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
+            if(response.statusCode() != 200) 
+                throw new ResultException(response.body(), HttpStatus.valueOf(response.statusCode()));
+            
         } catch (Exception e) {
             throw new Exception("Can't connect to server");
         }
