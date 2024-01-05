@@ -58,6 +58,7 @@ public class OthersService {
     }
 
     private void sendRequest(String route, String body) throws Exception {
+        HttpResponse<String> response;
         try
         {
             HttpRequest request = HttpRequest.newBuilder()
@@ -66,12 +67,13 @@ public class OthersService {
             .header("Content-Type", "application/json")
             .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if(response.statusCode() != 200) 
-                throw new ResultException(response.body(), HttpStatus.valueOf(response.statusCode()));
-            
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());           
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             throw new Exception("Can't connect to server");
         }
+        
+        if(response.statusCode() != 200) 
+            throw new ResultException(response.body(), HttpStatus.valueOf(response.statusCode()));
     }
 }

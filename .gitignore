@@ -25,5 +25,4 @@ replay_pid*
 
 cc-project.code-workspace
 */target/
-*/.mvn/
 .vscode/

@@ -17,6 +17,9 @@ services:
     build: ./others
     environment:
       - DB_URL=jdbc:postgresql://pgns:5432/db
+      - DB_USER=postgres
+      - DB_PASS=admin
+      - CENTRAL_URL=http://central:8080
     ports:
       - 8021:8080
     depends_on:
@@ -40,6 +43,9 @@ services:
     build: ./others
     environment:
       - DB_URL=jdbc:postgresql://pgbg:5432/db
+      - DB_USER=postgres
+      - DB_PASS=admin
+      - CENTRAL_URL=http://central:8080
     ports:
       - 8011:8080
     depends_on:
@@ -63,6 +69,9 @@ services:
     build: ./others
     environment:
       - DB_URL=jdbc:postgresql://pgnis:5432/db
+      - DB_USER=postgres
+      - DB_PASS=admin
+      - CENTRAL_URL=http://central:8080
     ports:
       - 8018:8080
     depends_on:
@@ -86,17 +95,16 @@ services:
     build: ./central
     environment:
       - DB_URL=jdbc:postgresql://pgcentral:5432/db
-    ports:
-      - 8000:8080
+      - DB_USER=postgres
+      - DB_PASS=admin
+    # ports:
+    #   - 8000:8080
     depends_on:
       pgcentral:
         condition: service_healthy
 
-enviroment:
-  - DB_USER=postgres
-  - DB_PASS=admin
-  - CENTRAL_URL=http://central:8000
 volumes:
   datans:
   databg:
   datanis:
+  datacentral:

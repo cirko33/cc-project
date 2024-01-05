@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class UserIdDTO {
     @NotEmpty(message = "User Id is required")
-    private String userId;
+    private Long userId;
 }
