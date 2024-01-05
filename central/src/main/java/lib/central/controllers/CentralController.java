@@ -28,7 +28,8 @@ public class CentralController {
     }
 
     @PostMapping("/return")
-    public ResponseEntity<Void>  returnBook(UserIdDTO userIdDTO) throws Exception {
+    public ResponseEntity<Void> returnBook(@Valid @RequestBody UserIdDTO userIdDTO) throws Exception {
+        System.out.println(userIdDTO.getUserId());
         centralService.returnBook(userIdDTO);
         return ResponseEntity.ok().build();
     }

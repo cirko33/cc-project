@@ -24,10 +24,8 @@ public class CentralService {
     }
     
     public void rent(UserIdDTO userIdDTO) throws Exception {
-        User user = userRepository.findById(userIdDTO.getUserId()).orElse(null);
-        if(user == null) throw new NotFoundException("User not found");
+        User user = userRepository.findById(userIdDTO.getUserId()).orElseThrow(() -> new NotFoundException("User not found"));
         
-
         if(user.getRentedBooks() >= 3) throw new BadRequestException("Too Many Books");
         
         user.setRentedBooks(user.getRentedBooks() + 1);
@@ -35,8 +33,8 @@ public class CentralService {
     }
 
     public void returnBook(UserIdDTO userIdDTO) throws Exception {
-        User user = userRepository.findById(userIdDTO.getUserId()).orElse(null);
-        if(user == null) throw new NotFoundException("User not found");
+        System.out.println(userIdDTO.getUserId());
+        User user = userRepository.findById(userIdDTO.getUserId()).orElseThrow(() -> new NotFoundException("User not found"));
 
         user.setRentedBooks(user.getRentedBooks() > 0 ? user.getRentedBooks() - 1 : 0);
         userRepository.saveAndFlush(user);
