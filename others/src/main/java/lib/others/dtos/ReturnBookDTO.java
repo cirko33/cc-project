@@ -1,12 +1,10 @@
 package lib.others.dtos;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class ReturnBookDTO {
-    @NotEmpty(message = "ISBN is required")
-    public String isbn;
-    @NotEmpty(message = "User ID is required")
-    public Long userId;
+    @NotNull(message = "Book ID is required")
+    public Long bookId;
 }

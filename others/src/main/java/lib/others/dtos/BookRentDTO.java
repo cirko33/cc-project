@@ -1,8 +1,12 @@
 package lib.others.dtos;
 
-import java.util.Date;
+
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -11,10 +15,10 @@ public class BookRentDTO {
     private String title;
     @NotEmpty(message = "Author is required")
     private String author;
-    @NotEmpty(message = "User ID is required")
-    private int userId;
+    @NotNull(message = "User ID is required")
+    private Long userId;
     @NotEmpty(message = "ISBN is required")
     private String isbn;
-    @NotEmpty(message = "Rental date is required")
-    private Date rentalDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate rentalDate;
 }

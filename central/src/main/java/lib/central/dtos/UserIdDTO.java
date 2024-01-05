@@ -1,10 +1,10 @@
 package lib.central.dtos;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UserIdDTO {
-    @NotEmpty(message = "User Id is required")
+    @NotNull(message = "User ID is required")
     private Long userId;
 }

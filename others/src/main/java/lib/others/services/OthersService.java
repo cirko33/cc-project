@@ -5,7 +5,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+
+import java.util.List;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lib.others.dtos.BookRentDTO;
 import lib.others.dtos.RegisterDTO;
+import lib.others.dtos.RentedBookDTO;
 import lib.others.dtos.ReturnBookDTO;
 import lib.others.dtos.UserIdDTO;
 import lib.others.exceptions.ResultException;
@@ -39,22 +43,22 @@ public class OthersService {
     } 
 
     public void rent(BookRentDTO bookRentDTO) throws Exception {
+        BookRental rent = modelMapper.map(bookRentDTO, BookRental.class);
+        rent.setId(null);
         UserIdDTO userIdDTO = modelMapper.map(bookRentDTO, UserIdDTO.class);
         sendRequest("rent", objectMapper.writeValueAsString(userIdDTO));
     
-        BookRental rent = modelMapper.map(bookRentDTO, BookRental.class);
-        repo.save(rent);        
+        repo.saveAndFlush(rent);        
     }
 
     public void returnBook(ReturnBookDTO returnBookDTO) throws Exception {
-        BookRental rent = repo.findByIsbn(returnBookDTO.getIsbn());
-        if(rent == null) throw new ResultException("Book not found");
-
-        UserIdDTO userIdDTO = modelMapper.map(returnBookDTO, UserIdDTO.class);
-        sendRequest("return", objectMapper.writeValueAsString(userIdDTO));
+        BookRental rent = repo.findById(returnBookDTO.getBookId())
+            .orElseThrow(() -> new ResultException("Book not found"));
+        
+        sendRequest("return", objectMapper.writeValueAsString(new UserIdDTO(rent.getUserId())));
 
         rent.setReturnDate(LocalDate.now());
-        repo.save(rent);
+        repo.saveAndFlush(rent);
     }
 
     private void sendRequest(String route, String body) throws Exception {
@@ -75,5 +79,10 @@ public class OthersService {
         
         if(response.statusCode() != 200) 
             throw new ResultException(response.body(), HttpStatus.valueOf(response.statusCode()));
+    }
+
+    public List<RentedBookDTO> getRented() {
+        List<BookRental> rents = repo.findByReturnDateIsNull();
+        return modelMapper.map(rents, new TypeToken<List<RentedBookDTO>>() {}.getType());
     }
 }

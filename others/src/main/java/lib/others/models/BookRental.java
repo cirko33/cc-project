@@ -1,6 +1,8 @@
 package lib.others.models;
 
 import java.time.LocalDate;
+
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +22,6 @@ public class BookRental {
     private Long userId;
     private String isbn;
     private LocalDate rentalDate;
+    @Nullable
     private LocalDate returnDate = null;
-    private Boolean returned = false;
 }

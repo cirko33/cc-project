@@ -2,13 +2,12 @@ version: '3'
 services:
   pgns:
     image: postgres
-    environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=db
-    healthcheck:
+    env_file:
+      - postgres.env
+    healthcheck: &health
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
-      timeout: 5s
+      timeout: 3s
       retries: 5
     volumes:
       - datans:/var/lib/postgresql/data
@@ -16,10 +15,9 @@ services:
   ns:
     build: ./others
     environment:
-      - DB_URL=jdbc:postgresql://pgns:5432/db
-      - DB_USER=postgres
-      - DB_PASS=admin
-      - CENTRAL_URL=http://central:8080
+      - DB_URL=pgns
+    env_file:
+      - creds.env
     ports:
       - 8021:8080
     depends_on:
@@ -28,24 +26,18 @@ services:
 
   pgbg:
     image: postgres
-    environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    env_file:
+      - postgres.env
+    healthcheck: *health
     volumes:
       - databg:/var/lib/postgresql/data
     
   bg:
     build: ./others
     environment:
-      - DB_URL=jdbc:postgresql://pgbg:5432/db
-      - DB_USER=postgres
-      - DB_PASS=admin
-      - CENTRAL_URL=http://central:8080
+      - DB_URL=pgbg
+    env_file:
+      - creds.env
     ports:
       - 8011:8080
     depends_on:
@@ -54,24 +46,18 @@ services:
 
   pgnis:
     image: postgres
-    environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    env_file:
+      - postgres.env
+    healthcheck: *health
     volumes:
       - datanis:/var/lib/postgresql/data
     
   nis:
     build: ./others
     environment:
-      - DB_URL=jdbc:postgresql://pgnis:5432/db
-      - DB_USER=postgres
-      - DB_PASS=admin
-      - CENTRAL_URL=http://central:8080
+      - DB_URL=pgnis
+    env_file:
+      - creds.env
     ports:
       - 8018:8080
     depends_on:
@@ -80,25 +66,18 @@ services:
 
   pgcentral:
     image: postgres
-    environment:
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=db
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    env_file:
+      - postgres.env
+    healthcheck: *health
     volumes:
       - datacentral:/var/lib/postgresql/data
     
   central:
     build: ./central
     environment:
-      - DB_URL=jdbc:postgresql://pgcentral:5432/db
-      - DB_USER=postgres
-      - DB_PASS=admin
-    # ports:
-    #   - 8000:8080
+      - DB_URL=pgcentral
+    env_file:
+      - creds.env
     depends_on:
       pgcentral:
         condition: service_healthy

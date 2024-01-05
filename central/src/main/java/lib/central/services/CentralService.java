@@ -20,7 +20,7 @@ public class CentralService {
         if(user != null) throw new BadRequestException("User already exists");
 
         user = modelMapper.map(registerDTO, User.class);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
     
     public void rent(UserIdDTO userIdDTO) throws Exception {
@@ -31,7 +31,7 @@ public class CentralService {
         if(user.getRentedBooks() >= 3) throw new BadRequestException("Too Many Books");
         
         user.setRentedBooks(user.getRentedBooks() + 1);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     public void returnBook(UserIdDTO userIdDTO) throws Exception {
@@ -39,6 +39,6 @@ public class CentralService {
         if(user == null) throw new NotFoundException("User not found");
 
         user.setRentedBooks(user.getRentedBooks() > 0 ? user.getRentedBooks() - 1 : 0);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 }
