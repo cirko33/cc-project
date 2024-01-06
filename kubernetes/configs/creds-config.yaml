@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: creds-config
+  labels:
+    app: creds
+data:
+  DB_USER: postgres
+  DB_PASS: root
+  CENTRAL_URL: http://central.local
+  DB_URL: localhost

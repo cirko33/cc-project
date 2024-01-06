@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ns
+  template:
+    metadata:
+      labels:
+        app: ns
+    spec:
+ 
+      containers:
+      - name: ns
+        image: cirko33/others
+        envFrom:
+          - configMapRef:
+              name: creds-config
+        ports:
+          - containerPort: 8080
+
+      - name: pgns
+        image: postgres
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: datans 
+
+      volumes:
+        - name: datans
+          persistentVolumeClaim:
+            claimName: host-pvc
+---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: bg
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: bg
+#   template:
+#     metadata:
+#       labels:
+#         app: bg
+#     spec:
+#       containers:
+#       - name: pgbg
+#         image: postgres
+#         envFrom:
+#           - configMapRef:
+#               name: postgres-config
+#         ports:
+#           - containerPort: 5432
+#         volumeMounts:
+#           - mountPath: /var/lib/postgresql/data
+#             name: databg
+
+#       - name: bg
+#         image: cirko33/others
+#         envFrom:
+#           - configMapRef:
+#               name: creds-config
+#         ports:
+#           - containerPort: 8080
+
+#       volumes:
+#         - name: databg
+#           persistentVolumeClaim:
+#             claimName: host-pvc
+# ---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nis
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: nis
+#   template:
+#     metadata:
+#       labels:
+#         app: nis
+#     spec:
+#       containers:
+#       - name: pgnis
+#         image: postgres
+#         envFrom:
+#           - configMapRef:
+#               name: postgres-config
+#         ports:
+#           - containerPort: 5432
+#         volumeMounts:
+#           - mountPath: /var/lib/postgresql/data
+#             name: datanis
+
+#       - name: nis
+#         image: cirko33/others
+#         envFrom:
+#           - configMapRef:
+#               name: creds-config
+#         ports:
+#           - containerPort: 8080
+
+#       volumes:
+#         - name: datanis
+#           persistentVolumeClaim:
+#             claimName: host-pvc
+# ---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central
+  template:
+    metadata:
+      labels:
+        app: central
+    spec:
+      containers:
+      - name: pgcentral
+        image: postgres
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: datacentral
+
+      - name: central
+        image: cirko33/central
+        envFrom:
+          - configMapRef:
+              name: creds-config
+        ports:
+          - containerPort: 8080
+
+      volumes:
+        - name: datacentral
+          persistentVolumeClaim:
+            claimName: host-pvc
+---
+

@@ -13,7 +13,7 @@ services:
       - datans:/var/lib/postgresql/data
     
   ns:
-    build: ./others
+    image: cirko33/others
     environment:
       - DB_URL=pgns
     env_file:
@@ -33,7 +33,7 @@ services:
       - databg:/var/lib/postgresql/data
     
   bg:
-    build: ./others
+    image: cirko33/others
     environment:
       - DB_URL=pgbg
     env_file:
@@ -53,7 +53,7 @@ services:
       - datanis:/var/lib/postgresql/data
     
   nis:
-    build: ./others
+    image: cirko33/others
     environment:
       - DB_URL=pgnis
     env_file:
@@ -73,7 +73,7 @@ services:
       - datacentral:/var/lib/postgresql/data
     
   central:
-    build: ./central
+    image: cirko33/others
     environment:
       - DB_URL=pgcentral
     env_file:

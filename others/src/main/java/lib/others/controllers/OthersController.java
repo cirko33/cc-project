@@ -42,4 +42,10 @@ public class OthersController {
     public ResponseEntity<List<RentedBookDTO>> rented() {
         return ResponseEntity.ok(othersService.getRented());
     }
+
+    //TESTING CONTAINTER
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("Test");
+    }
 }
