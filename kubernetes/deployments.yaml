@@ -29,95 +29,95 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: datans 
+      #   volumeMounts:
+      #     - mountPath: /var/lib/postgresql/data
+      #       name: datans 
 
-      volumes:
-        - name: datans
-          persistentVolumeClaim:
-            claimName: host-pvc
+      # volumes:
+      #   - name: datans
+      #     persistentVolumeClaim:
+      #       claimName: host-pvc
 ---
 
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: bg
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: bg
-#   template:
-#     metadata:
-#       labels:
-#         app: bg
-#     spec:
-#       containers:
-#       - name: pgbg
-#         image: postgres
-#         envFrom:
-#           - configMapRef:
-#               name: postgres-config
-#         ports:
-#           - containerPort: 5432
-#         volumeMounts:
-#           - mountPath: /var/lib/postgresql/data
-#             name: databg
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bg
+  template:
+    metadata:
+      labels:
+        app: bg
+    spec:
+      containers:
+      - name: bg
+        image: cirko33/others
+        envFrom:
+          - configMapRef:
+              name: creds-config
+        ports:
+          - containerPort: 8080
 
-#       - name: bg
-#         image: cirko33/others
-#         envFrom:
-#           - configMapRef:
-#               name: creds-config
-#         ports:
-#           - containerPort: 8080
+      - name: pgbg
+        image: postgres
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        ports:
+          - containerPort: 5432
+      #   volumeMounts:
+      #     - mountPath: /var/lib/postgresql/data
+      #       name: databg
 
-#       volumes:
-#         - name: databg
-#           persistentVolumeClaim:
-#             claimName: host-pvc
-# ---
+      # volumes:
+      #   - name: databg
+      #     persistentVolumeClaim:
+      #       claimName: host-pvc
+---
 
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: nis
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: nis
-#   template:
-#     metadata:
-#       labels:
-#         app: nis
-#     spec:
-#       containers:
-#       - name: pgnis
-#         image: postgres
-#         envFrom:
-#           - configMapRef:
-#               name: postgres-config
-#         ports:
-#           - containerPort: 5432
-#         volumeMounts:
-#           - mountPath: /var/lib/postgresql/data
-#             name: datanis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nis
+  template:
+    metadata:
+      labels:
+        app: nis
+    spec:
+      containers:
+      - name: nis
+        image: cirko33/others
+        envFrom:
+          - configMapRef:
+              name: creds-config
+        ports:
+          - containerPort: 8080
 
-#       - name: nis
-#         image: cirko33/others
-#         envFrom:
-#           - configMapRef:
-#               name: creds-config
-#         ports:
-#           - containerPort: 8080
+      - name: pgnis
+        image: postgres
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        ports:
+          - containerPort: 5432
+      #   volumeMounts:
+      #     - mountPath: /var/lib/postgresql/data
+      #       name: datanis
 
-#       volumes:
-#         - name: datanis
-#           persistentVolumeClaim:
-#             claimName: host-pvc
-# ---
+      # volumes:
+      #   - name: datanis
+      #     persistentVolumeClaim:
+      #       claimName: host-pvc
+---
 
 apiVersion: apps/v1
 kind: Deployment
@@ -141,9 +141,9 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: datacentral
+      #   volumeMounts:
+      #     - mountPath: /var/lib/postgresql/data
+      #       name: datacentral
 
       - name: central
         image: cirko33/central
@@ -153,9 +153,9 @@ spec:
         ports:
           - containerPort: 8080
 
-      volumes:
-        - name: datacentral
-          persistentVolumeClaim:
-            claimName: host-pvc
+      # volumes:
+      #   - name: datacentral
+      #     persistentVolumeClaim:
+      #       claimName: host-pvc
 ---
 

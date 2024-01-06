@@ -5,4 +5,4 @@ kubectl apply -f ingress.yaml
 
 clear
 echo "Starting"
-#
+minikube dashboard
