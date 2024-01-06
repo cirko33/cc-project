@@ -29,14 +29,14 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-      #   volumeMounts:
-      #     - mountPath: /var/lib/postgresql/data
-      #       name: datans 
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: datans 
 
-      # volumes:
-      #   - name: datans
-      #     persistentVolumeClaim:
-      #       claimName: host-pvc
+      volumes:
+        - name: datans
+          persistentVolumeClaim:
+            claimName: host-pvc-ns
 ---
 
 apiVersion: apps/v1
@@ -69,14 +69,14 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-      #   volumeMounts:
-      #     - mountPath: /var/lib/postgresql/data
-      #       name: databg
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: databg
 
-      # volumes:
-      #   - name: databg
-      #     persistentVolumeClaim:
-      #       claimName: host-pvc
+      volumes:
+        - name: databg
+          persistentVolumeClaim:
+            claimName: host-pvc-bg
 ---
 
 apiVersion: apps/v1
@@ -109,14 +109,14 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-      #   volumeMounts:
-      #     - mountPath: /var/lib/postgresql/data
-      #       name: datanis
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: datanis
 
-      # volumes:
-      #   - name: datanis
-      #     persistentVolumeClaim:
-      #       claimName: host-pvc
+      volumes:
+        - name: datanis
+          persistentVolumeClaim:
+            claimName: host-pvc-nis
 ---
 
 apiVersion: apps/v1
@@ -141,9 +141,9 @@ spec:
               name: postgres-config
         ports:
           - containerPort: 5432
-      #   volumeMounts:
-      #     - mountPath: /var/lib/postgresql/data
-      #       name: datacentral
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: datacentral
 
       - name: central
         image: cirko33/central
@@ -153,9 +153,9 @@ spec:
         ports:
           - containerPort: 8080
 
-      # volumes:
-      #   - name: datacentral
-      #     persistentVolumeClaim:
-      #       claimName: host-pvc
+      volumes:
+        - name: datacentral
+          persistentVolumeClaim:
+            claimName: host-pvc-central
 ---
 

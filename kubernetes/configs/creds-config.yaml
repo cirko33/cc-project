@@ -7,5 +7,5 @@ metadata:
 data:
   DB_USER: postgres
   DB_PASS: root
-  CENTRAL_URL: http://central.local
+  CENTRAL_URL: http://central-service:8080
   DB_URL: localhost
